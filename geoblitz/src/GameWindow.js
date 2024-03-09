@@ -52,7 +52,7 @@ const GameWindow = () => {
     const [isHovering,setIsHovering] = useState(false)
     const {isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: 'AIzaSyB0pAAfd-SgsJm0w0hvzZfg90qfXoPN9bw'
+        googleMapsApiKey: process.env.API_KEY
     })
     
     const defaultMapOptions = {
