@@ -1,167 +1,187 @@
 import React, {useState, useEffect} from "react";
-import ReactStreetview from "react-streetview";
 import { GoogleMap , Marker, useJsApiLoader} from '@react-google-maps/api';
 import './App.css'
+import ReactPlayer from 'react-player/youtube'
+import useGameStore from "./Stores/gameStore";
 
-const containerStyle = {
-  width: '25vw',
-  height: '30vh',
-  borderRadius: '12px',
-  transition: '500ms'
-}
+const GameWindow = () => {
+    const [score,setScore] = useState(0);
+    const [distance,setDistance] = useState(0);
 
-const containerStyleBig = {
-  width: '45vw',
-  height: '50vh',
-  borderRadius: '16px',
-  transition: '500ms'
-}
 
-const center = {
-  lat: 0,
-  lng: 0
-}
+    // <------ GOOGLEMAPS ----->
 
-const famousPlacesIndia = [
-  {
-    lat: 27.1719538,
-    lng: 78.0421016
-  },
-  {
-    lat: 28.6560397,
-    lng: 77.2368063
-  },
-  {
-    lat: 26.924022,
-    lng: 75.827195
-  },
-  {
-    lat: 21.8380254,
-    lng: 73.7208998
-  },
-  {
-    lat: 28.5247738,
-    lng: 77.185088
-  },
-  {
-    lat: 30.7348881,
-    lng: 79.06702
-  },
-  {
-    lat: 21.2479995,
-    lng: 81.6035124
-  },
-  {
-    lat: 18.9224679,
-    lng: 72.8344565
-  },
-]
+    const markLocation = useGameStore((state) => state.markLocation)
+    const guessedLocation = useGameStore((state) => state.guessedLocation)
+    const correctLocation = useGameStore((state) => state.correctLocation)
+    const refresh = useGameStore((state) => state.refresh)
+    const addRound = useGameStore((state) => state.addRound)
+    const rounds = useGameStore((state) => state.rounds)
+    const addScore = useGameStore((state) => state.addScore)
+    const userScore = useGameStore((state) => state.userScore)
 
-const StreetView = () => {
-  const googleMapsApiKey = "";
-  const [positions, setpositions] = useState({
-    lat: famousPlacesIndia[5].lat,
-    lng: famousPlacesIndia[5].lng
-  });
-  const streetViewPanoramaOptions = {
-    position: { lat: positions.lat, lng: positions.lng },
-    pov: { heading: 100, pitch: 0 },
-    zoom: 1,
-    addressControl: true,
-    showRoadLabels: false,
-    addressControl:false,
-    zoomControl: false,
-    fullscreenControl: false,
-    panControl: false
-  };
+    const containerStyle = {
+        width: '25vw',
+        height: '30vh',
+        borderRadius: '12px',
+        transition: '500ms',
+        draggingCursor: "crosshair",
+        draggableCursor: "crosshair"
+    }
 
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        backgroundColor: "#eeeeee",
+    const containerStyleBig = {
+        width: '45vw',
+        height: '50vh',
+        borderRadius: '16px',
+        transition: '500ms',
+        draggingCursor: "crosshair",
+        draggableCursor: "crosshair"
+    }
 
-        filter: 'invert()'
-      }}
-    >
-      <ReactStreetview
-        apiKey={googleMapsApiKey}
-        streetViewPanoramaOptions={streetViewPanoramaOptions}
-      />
-    </div>
-  );
-};
+    const containerMobile = {
+        width: '84vw',
+        height: '30vh',
+        borderRadius: '16px'
+    }
 
-const defaultMapOptions = {
-    fullscreenControl: false,
-    zoomControl: false,
-    scaleControl: true,
-    streetViewControl: false
-};
+    const [center,setCenter] = useState({
+        lat: 0,
+        lng: 0
+    })
 
-const MapsView = () => {
-  const [isHovering,setIsHovering] = useState(false)
-  const {isLoaded } = useJsApiLoader({
-      id: 'google-map-script',
-      googleMapsApiKey: ''
-  })
+    const [isHovering,setIsHovering] = useState(false)
+    const {isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: 'AIzaSyB0pAAfd-SgsJm0w0hvzZfg90qfXoPN9bw'
+    })
+    
+    const defaultMapOptions = {
+        fullscreenControl: false,
+        zoomControl: false,
+        scaleControl: true,
+        streetViewControl: false
+    };
 
-  const [pinLoc, setPinLoc] = useState({ lat: null, lng: null });
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
 
-  const handleMapClick = (event) => {
-      setPinLoc({
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng()
-      });
-  };
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371 * 1000; // Earth's radius in meters
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+    }
 
-return (
-  <div className='maps-view' onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-      {isLoaded && (
-          <GoogleMap 
-              mapContainerStyle={isHovering ? containerStyleBig : containerStyle}
-              center={center}
-              zoom={2}
-              onClick={handleMapClick}
-              options= {defaultMapOptions}
-              >
-                <Marker position={{lat: famousPlacesIndia[0].lat, lng: famousPlacesIndia[0].lng}} />
-              {pinLoc.lat !== null && (<Marker position={{lat: pinLoc.lat, lng: pinLoc.lng}} />)}
-          </GoogleMap>
-        )}
-      </div>
-    )
-}
+    const calculateScore = (dist) => {
+        const mx = 3000;
+        if(dist <= 1000) {
+            return 100
+        }
+        const res = (mx * 1000 - dist) / (mx * 10);
+        return Math.floor(res)
+    }
 
-const ButtonNext = () => {
-  return (
-    <div className="button">
-      Next ⏩
-    </div>
-  )
-}
+    const handleGuessButtonClick = () => {
+        const res = calculateDistance(correctLocation.lat,correctLocation.lng,guessedLocation.lat,guessedLocation.lng);
+        setDistance(res);
+        setPath([{lat: correctLocation.lat,lng: correctLocation.lng},{lat: guessedLocation.lat,lng: guessedLocation.lng}])
+        const scre = calculateScore(res);
+        addScore(scre);
+        addRound()
+        setScore(scre)
+        console.log(res)
+    }
 
-function GameWindow() {
-  const score = 25000;
-  return (
+    const [pinLoc, setPinLoc] = useState({ lat: null, lng: null });
+  
+    const handleMapClick = (event) => {
+        setPinLoc({
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        });
+        setCenter({
+            lat:event.latLng.lat(),
+            lng: event.latLng.lng()
+        });
+        markLocation(event.latLng.lat(),event.latLng.lng())
+    };
+
+    const [path,setPath] = useState([]);
+
+
+    // <------>
+
+
+    // <------ VideoPlayer ------>
+    
+    const [screenSize, setScreenSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+          setScreenSize({
+            width: window.innerWidth,
+            height: window.innerHeight
+          });
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        // Clean up the event listener
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+
+    // <------>
+    return (
     <div className="App">
-      <div className="street-view-container">
-        <StreetView />
-      </div>
-      <div className="score-card-container">
-        <div style={{fontSize:'24px',background: '#bf40bf', height: '42px',width: '280px',color:'white',borderRadius: '12px 0px 0px 12px'}}>
-          <div style={{padding: '4px 18px'}}>
-            Score: {score}/25000
-          </div>
+        <div className="street-view-container">
+            <ReactPlayer url={correctLocation.video} config={{ youtube: { playerVars: { disablekb: 1 } } }} width={screenSize.width} height={screenSize.height} playing={true} volume={0} controls={false} loop={true} pip={false}/>
         </div>
-      </div>
+        <div className="score-card-container">
+            <div style={{fontSize:'24px',background: '#bf40bf', height: '42px',width: '350px',color:'white',borderRadius: '12px 0px 0px 12px'}}>
+                <div style={{padding: '4px 18px'}}>
+                    Round: {rounds} | {userScore} / {(rounds-1)*100}
+                </div>
+            </div>
+        </div>
       
-      <div className="button-container">
-        <ButtonNext /> 
-      </div>
-      <div className="map-view-container">
-        <MapsView />
+        <div className="button-container">
+            {distance !== 0 && (
+            <div className='containerResult'>
+                <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'red'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
+                <div className="button" onClick={() => {refresh();setDistance(0);setPinLoc({ lat: null, lng: null })}}>
+                    Next {`>>`}
+                </div>
+            </div>) }{pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => handleGuessButtonClick()}>
+                Guess {`>>`}
+            </div>)}
+        </div>
+        <div className="map-view-container">
+            
+        <div className='maps-view' onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+            {isLoaded && (
+                <GoogleMap 
+                    mapContainerStyle={window.innerWidth <= 500 ? containerMobile : isHovering ? containerStyleBig : containerStyle}
+                    center={center}
+                    zoom={2}
+                    onClick={handleMapClick}
+                    options= {defaultMapOptions}
+                    >
+                    {distance !== 0 && (<Marker position={{lat: correctLocation.lat, lng: correctLocation.lng}} icon={{url: "http://maps.google.com/mapfiles/kml/paddle/red-blank.png"}}/>)}
+                    {pinLoc.lat !== null && (<Marker position={{lat: pinLoc.lat, lng: pinLoc.lng}} />)}
+                </GoogleMap>
+            )}
+        </div>
       </div>
     </div>
   );
