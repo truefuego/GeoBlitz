@@ -8,9 +8,6 @@ const GameWindow = () => {
     const [score,setScore] = useState(0);
     const [distance,setDistance] = useState(0);
 
-
-    // <------ GOOGLEMAPS ----->
-
     const markLocation = useGameStore((state) => state.markLocation)
     const guessedLocation = useGameStore((state) => state.guessedLocation)
     const correctLocation = useGameStore((state) => state.correctLocation)
@@ -19,6 +16,9 @@ const GameWindow = () => {
     const rounds = useGameStore((state) => state.rounds)
     const addScore = useGameStore((state) => state.addScore)
     const userScore = useGameStore((state) => state.userScore)
+
+    // <------ GOOGLEMAPS ----->
+
 
     const containerStyle = {
         width: '25vw',
@@ -79,7 +79,7 @@ const GameWindow = () => {
     }
 
     const calculateScore = (dist) => {
-        const mx = 3000;
+        const mx = 12742;
         if(dist <= 1000) {
             return 100
         }
@@ -114,7 +114,6 @@ const GameWindow = () => {
 
     const [path,setPath] = useState([]);
 
-
     // <------>
 
 
@@ -135,13 +134,13 @@ const GameWindow = () => {
     
         window.addEventListener('resize', handleResize);
     
-        // Clean up the event listener
         return () => {
           window.removeEventListener('resize', handleResize);
         };
       }, []);
 
     // <------>
+
     return (
     <div className="App">
         <div className="street-view-container">
