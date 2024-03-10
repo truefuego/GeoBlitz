@@ -49,10 +49,12 @@ const GameWindow = () => {
         lng: 0
     })
 
+    console.log(process.env)
+    console.log(process.env.REACT_APP_API_KEY)
     const [isHovering,setIsHovering] = useState(false)
     const {isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: process.env.API_KEY
+        googleMapsApiKey: process.env.REACT_APP_API_KEY
     })
     
     const defaultMapOptions = {
@@ -93,7 +95,6 @@ const GameWindow = () => {
         setPath([{lat: correctLocation.lat,lng: correctLocation.lng},{lat: guessedLocation.lat,lng: guessedLocation.lng}])
         const scre = calculateScore(res);
         addScore(scre);
-        addRound()
         setScore(scre)
         console.log(res)
     }
@@ -158,7 +159,7 @@ const GameWindow = () => {
             {distance !== 0 && (
             <div className='containerResult'>
                 <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'red'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
-                <div className="button" onClick={() => {refresh();setDistance(0);setPinLoc({ lat: null, lng: null })}}>
+                <div className="button" onClick={() => {refresh();setDistance(0);setPinLoc({ lat: null, lng: null });addRound()}}>
                     Next {`>>`}
                 </div>
             </div>) }{pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => handleGuessButtonClick()}>
