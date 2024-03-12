@@ -115,7 +115,13 @@ const GameWindow = () => {
     }
 
     const calculateScore = (dist) => {
-        const mx = gameMode !== 0 ? 1500 : 8000;
+        var mx = 8000;
+        if(gameMode === 1) {
+            mx = 1500;
+        }
+        else if(gameMode === 2) {
+            mx = 2500;
+        }
         if(dist <= 1000) {
             return 100
         }
