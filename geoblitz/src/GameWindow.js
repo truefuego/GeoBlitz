@@ -213,7 +213,7 @@ const GameWindow = () => {
         <div style={gameMode !== null ? cover_card_close : cover_card}> 
             <img style={{width: screenSize.width <= 1490 ? '' : '100%',height: screenSize.width <= 1490 ? '100%' : '',objectFit: 'center',objectPosition: 'center center',position: 'absolute'}} src={Cover_Image} alt="background"/>
             {gameMode === null && (<div style={{zIndex: '11',position: 'absolute',height:'100%',width:'100%',background: 'rgba(0, 0, 0, 0.3)',display: 'flex',flexDirection:'column',alignItems: 'center',justifyContent: 'center'}}>
-                <p style={{fontSize: '54px',color: 'white',margin: '30px 10px'}}>GeoBlitz</p>
+                <p style={{fontSize: '54px',color: 'white',margin: '30px 10px'}}>Geo Explorer</p>
                 {userScore !== 0 ? 
                 (<div style={{display: 'flex',flexDirection:'column',alignItems: 'center',maxWidth:'360px',width: '80vw',background: '#6a1b9a',padding: '20px',borderRadius:'8px'}}>
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" stroke-width="2" d="M12,22 C12,22 4,16 4,10 C4,5 8,2 12,2 C16,2 20,5 20,10 C20,16 12,22 12,22 Z M12,13 C13.657,13 15,11.657 15,10 C15,8.343 13.657,7 12,7 C10.343,7 9,8.343 9,10 C9,11.657 10.343,13 12,13 L12,13 Z"></path></svg>
