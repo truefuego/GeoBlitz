@@ -274,14 +274,21 @@ const GameWindow = () => {
             <div className="button-container">
                 {distance !== 0 && (
                 <div className='containerResult'>
-                    <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'red'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
+                    <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'rgb(70,0,0)'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
                     <div className="button" onClick={() => {handleNextButtonClick();startTimer()}}>
                         Next {`>>`}
                     </div>
-                </div>) }{pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => {handleGuessButtonClick();updateMaxScore(userScore)}}>
-                    Guess {`>>`}
-                </div>)}
+                </div>) 
+                }
+                
             </div>
+        )}
+        {gameMode !==null && (
+            <div className="guess-button-container">
+                {pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => {handleGuessButtonClick();updateMaxScore(userScore)}}>
+                Guess {`>>`}
+            </div>)}
+         </div>
         )}
         {gameMode !== null && (
             <div className="map-view-container">
