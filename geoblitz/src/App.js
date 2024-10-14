@@ -1,13 +1,18 @@
-import React, { useEffect} from "react";
+import React from "react";
 import './App.css'
 import GameWindow from "./GameWindow";
-import useGameStore from "./Stores/gameStore";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./Pages/Dashboard";
 
 function App() {
-  const {randomizeLocation,refresh} = useGameStore((state) => ({randomizeLocation: state.randomizeLocation,refresh: state.refresh}))
 
   return (
-    <GameWindow/>
+    <BrowserRouter>
+      <Routes>
+          <Route path="/" element={<GameWindow />} />
+          <Route path="/home" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
