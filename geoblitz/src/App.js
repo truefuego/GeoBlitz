@@ -9,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-          <Route path="/h" element={<GameWindow />} />
+          <Route path="/" element={<GameWindow />} />
           <Route path="/home" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
