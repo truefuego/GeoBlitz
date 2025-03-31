@@ -83,3 +83,18 @@
   top: 32px;
   right: center;
 }
+
+.hint-button{
+  z-index: 5 !important;
+  position: absolute;
+  bottom: calc(50vh - 30px);
+  left: 10px;
+  padding: 6px 16px;
+  background: steelblue;
+  color: white;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}

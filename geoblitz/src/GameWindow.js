@@ -207,6 +207,11 @@ const GameWindow = () => {
         };
     }, []);
 
+    const [showHint, setShowHint] = useState(false);
+    const handleHintClick = () => {
+        setShowHint(!showHint);
+    }
+
     // <------>
     
     return (
@@ -221,72 +226,70 @@ const GameWindow = () => {
             </div>)
         }
         {gameMode !== null && (
-            <div className="street-view-container">
-                <ReactPlayer url={correctLocation.video} config={{ youtube: { playerVars: { disablekb: 1 } } }} width={screenSize.width} height={screenSize.height} playing={true} volume={0} controls={false} loop={true} pip={false}/>
-            </div>
-        )}
-        {gameMode !== null && (
-            <div className="score-card-container">
-                <div style={{fontSize:'24px',background: '#bf40bf', height: '42px',width: 'fit-content',color:'white',borderRadius: '12px 0px 0px 12px'}}>
-                    <div style={{padding: '4px 18px'}}>
-                        Round: {rounds} / 5 | {userScore} / {(rounds-1)*100}
-                    </div>
+            <>
+                <div className="street-view-container">
+                    <ReactPlayer url={correctLocation.video} config={{ youtube: { playerVars: { disablekb: 1 } } }} width={screenSize.width} height={screenSize.height} playing={true} volume={0} controls={false} loop={true} pip={false}/>
                 </div>
-            </div>
-        )}
-        {gameMode !== null && (
-            <div className="timer-container">
-                <div style={{width: '100%',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                    <div style={{fontSize:'24px',background: '#bf40bf', height: 'fit-content',width: 'fit-content',padding: '4px',color:'white',borderRadius: '12px 12px 12px 12px'}}>
+                <div className="score-card-container">
+                    <div style={{fontSize:'24px',background: '#bf40bf', height: '42px',width: 'fit-content',color:'white',borderRadius: '12px 0px 0px 12px'}}>
                         <div style={{padding: '4px 18px'}}>
-                            {seconds} sec
+                            Round: {rounds} / 5 | {userScore} / {(rounds-1)*100}
                         </div>
                     </div>
                 </div>
-            </div>
-        )}
-        {gameMode !== null && (
-            <div className="button-container">
-                {distance !== 0 && (
-                <div className='containerResult'>
-                    <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'rgb(70,0,0)'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
-                    <div className="button" onClick={() => {handleNextButtonClick();startTimer()}}>
-                        Next {`>>`}
+                <div className="timer-container">
+                    <div style={{width: '100%',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                        <div style={{fontSize:'24px',background: '#bf40bf', height: 'fit-content',width: 'fit-content',padding: '4px',color:'white',borderRadius: '12px 12px 12px 12px'}}>
+                            <div style={{padding: '4px 18px'}}>
+                                {seconds} sec
+                            </div>
+                        </div>
                     </div>
-                </div>) 
-                }
-                
-            </div>
-        )}
-        {gameMode !==null && (
-            <div className="guess-button-container">
-                {pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => {handleGuessButtonClick();updateMaxScore(userScore)}}>
-                Guess {`>>`}
-            </div>)}
-         </div>
-        )}
-        {gameMode !== null && (
-            <div className="map-view-container">
-                <div className='maps-view' onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-                    {isLoaded && (
-                        <GoogleMap 
-                            mapContainerStyle={window.innerWidth <= 500 ? containerMobile : isHovering ? containerStyleBig : containerStyle}
-                            center={center}
-                            zoom={2}
-                            onClick={handleMapClick}
-                            options= {defaultMapOptions}
-                        >
-                            {distance !== 0 && (<Marker position={{lat: correctLocation.lat, lng: correctLocation.lng}} icon={{url: "http://maps.google.com/mapfiles/kml/paddle/red-blank.png"}}/>)}
-                            {pinLoc.lat !== null && (<Marker position={{lat: pinLoc.lat, lng: pinLoc.lng}} />)}
-                        </GoogleMap>
-                    )}
                 </div>
-            </div>
+                <div className="button-container">
+                    {distance !== 0 && (
+                    <div className='containerResult'>
+                        <div style={{color:'#0f0'}}>{score}/100 Points</div>Your guess was <div style={{color: 'rgb(70,0,0)'}}>{distance > 1000 ? Math.floor(distance/1000) : Math.floor(distance)} {distance > 1000 ? 'Km' : 'm'}</div> away from correct location
+                        <div className="button" onClick={() => {handleNextButtonClick();startTimer()}}>
+                            Next {`>>`}
+                        </div>
+                    </div>)}
+                </div>
+                <div className="guess-button-container">
+                    {pinLoc.lat !== null && distance === 0 && (<div className="button" onClick={() => {handleGuessButtonClick();updateMaxScore(userScore)}}>
+                        Guess {`>>`}
+                    </div>)}
+                </div>
+                <div className="map-view-container">
+                    <div className='maps-view' onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+                        {isLoaded && (
+                            <GoogleMap 
+                                mapContainerStyle={window.innerWidth <= 500 ? containerMobile : isHovering ? containerStyleBig : containerStyle}
+                                center={center}
+                                zoom={2}
+                                onClick={handleMapClick}
+                                options= {defaultMapOptions}
+                            >
+                                {distance !== 0 && (<Marker position={{lat: correctLocation.lat, lng: correctLocation.lng}} icon={{url: "http://maps.google.com/mapfiles/kml/paddle/red-blank.png"}}/>)}
+                                {pinLoc.lat !== null && (<Marker position={{lat: pinLoc.lat, lng: pinLoc.lng}} />)}
+                            </GoogleMap>
+                        )}
+                    </div>
+                </div>
+                {showHint ? (
+                    <div className="hint-button">
+                        <div style={{ width: '100%', maxWidth: '300px', height: 'fit-content'}}>
+                            <div style={{ height: '20px', width: '20px', cursor: 'pointer', borderRadius: '12px', backgroundColor: 'slateblue', position: 'absolute', top: -13, right: -6, textAlign: 'center' }} onClick={handleHintClick}>
+                                x
+                            </div>
+                        </div>
+                        <p>This is you Hint</p>
+                    </div>)
+                     : (
+                    <div className="hint-button" style={{ cursor: 'pointer'}} onClick={handleHintClick}>Hint?</div>
+                )}
+            </>
         )}
-        
-      
-        
-        
     </div>
   );
 }
