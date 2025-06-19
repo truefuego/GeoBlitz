@@ -86,6 +86,11 @@ const GameWindow = () => {
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_API_KEY
     })
+
+    const [center,setCenter] = useState({
+        lat: 0,
+        lng: 0
+    })
     
     const defaultMapOptions = {
         fullscreenControl: false,
@@ -140,6 +145,10 @@ const GameWindow = () => {
         }
         setPinLoc({
             lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        });
+        setCenter({
+            lat:event.latLng.lat(),
             lng: event.latLng.lng()
         });
         markLocation(event.latLng.lat(),event.latLng.lng())
@@ -256,6 +265,7 @@ const GameWindow = () => {
                         {isLoaded && (
                             <GoogleMap 
                                 mapContainerStyle={window.innerWidth <= 500 ? containerMobile : isHovering ? containerStyleBig : containerStyle}
+                                center={center}
                                 zoom={2}
                                 onClick={handleMapClick}
                                 options= {defaultMapOptions}
